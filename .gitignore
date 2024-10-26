@@ -1,0 +1,40 @@
+# created by virtualenv automatically
+# Python virtual environments and binaries
+bin/
+lib/
+share/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IntelliJ files and folders
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# OS and IDE specific
+.DS_Store
+Thumbs.db
+
+# Testing and coverage
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# Python environment files
+venv/
+.venv/
+env/

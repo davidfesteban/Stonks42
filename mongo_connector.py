@@ -12,7 +12,7 @@ class MongoConnector:
     _collection: Any
 
     def __init__(self, collection_name: str):
-        self._client = MongoClient('mongodb://localhost:27017/')
+        self._client = MongoClient('mongodb://admin:password@localhost:27017/')
         self._db = self._client['stonks']
         self._collection = self._db[collection_name]
 

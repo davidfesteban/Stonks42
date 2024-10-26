@@ -5,7 +5,7 @@ from model_creator import ModelCreator
 from torch.utils.data import DataLoader
 from model_creator import ModelCreator
 from torch.nn.modules.module import Module
-from mogno_dataset_tensor import MongoDataset
+from mongo_dataset_tensor import MongoDatasetTensorCache
 from mongo_connector import MongoConnector
 
 class NeuralLifecycle:
@@ -15,6 +15,7 @@ class NeuralLifecycle:
         loaded_model.train()  # Set model to training mode
         for epoch in range(epochs):
             running_loss_counter = 0.0
+            item_counter = 0
 
             for batch_index, (features, expected) in enumerate(data_loader):
                 features, expected = features.to(model_definition.device), expected.to(model_definition.device)
@@ -33,9 +34,10 @@ class NeuralLifecycle:
 
                 # Accumulate loss
                 running_loss_counter += loss.item()
+                item_counter += 1
 
             # Calculate and print average loss per epoch
-            avg_loss = running_loss_counter / len(data_loader)
+            avg_loss = running_loss_counter / item_counter
             print(f"Epoch [{epoch + 1}/{epochs}], Loss: {avg_loss:.4f}")
 
     #@staticmethod

@@ -1,14 +1,17 @@
 import torch.nn.utils as nn_utils
-
-from torch.utils.data import DataLoader
-from src.model.model_definition_gen_A0 import ModelDefinitionGenA0
 from torch.nn.modules.module import Module
+from torch.utils.data import DataLoader
+
+from src.model.model_definition_gen_A0 import ModelDefinitionGenA0
+
 
 class NeuralLifecycle:
 
     @staticmethod
-    def train_model(model_definition: ModelDefinitionGenA0, loaded_model: Module, data_loader: DataLoader, optimizer, scheduler,
-                    epochs: int):
+    def train_model(model_definition: ModelDefinitionGenA0, loaded_model: Module, data_loader: DataLoader, optimizer,
+                    scheduler,
+                    epochs: int,
+                    callback):
         loaded_model.train()  # Set model to training mode
         for epoch in range(epochs):
             running_loss_counter = 0.0
@@ -35,10 +38,13 @@ class NeuralLifecycle:
             # Calculate and print average loss per epoch
             avg_loss = running_loss_counter / item_counter
             scheduler.step(avg_loss)
+
+            if callback:
+                callback(epoch + 1, avg_loss)
             print(f"Epoch [{epoch + 1}/{epochs}], Loss: {avg_loss:.4f}")
 
-    #@staticmethod
-    #def evaluate_model(model, data_loader, criterion, device):
+    # @staticmethod
+    # def evaluate_model(model, data_loader, criterion, device):
     #    model.eval()  # Set model to evaluation mode
     #    val_loss_counter = 0.0
     #    correct_predictions = 0

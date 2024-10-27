@@ -1,16 +1,16 @@
-from typing import Any
-
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.nn.modules.module import Module
+
 
 class ModelUtil:
 
     @staticmethod
-    def save_model(loaded_model: Module, optimizer, path="model_checkpoint.pth"):
+    def save_model(loaded_model: Module, optimizer, name="A0", last_error=0.0,
+                   path="../../../output/model_checkpoint"):
+        total_path = path + name + '.pth'
         torch.save({
+            'last_error': last_error,
             'model_state_dict': loaded_model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict()
-        }, path)
-        print(f"Model saved to {path}")
+        }, total_path)
+        print(f"Model saved to {total_path}")

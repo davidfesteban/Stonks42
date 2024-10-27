@@ -25,6 +25,8 @@ class ModelDefinitionGenA0(nn.Module):
         self.criterion = nn.MSELoss()
         self.gradient_clip = 1.0
 
+        self.dataloader_batch = 64
+
         print(self.device)
 
     # Override

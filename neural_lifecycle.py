@@ -11,7 +11,8 @@ from mongo_connector import MongoConnector
 class NeuralLifecycle:
 
     @staticmethod
-    def train_model(model_definition: ModelCreator, loaded_model: Module, data_loader: DataLoader, optimizer, epochs: int):
+    def train_model(model_definition: ModelCreator, loaded_model: Module, data_loader: DataLoader, optimizer, scheduler,
+                    epochs: int):
         loaded_model.train()  # Set model to training mode
         for epoch in range(epochs):
             running_loss_counter = 0.0
@@ -29,7 +30,6 @@ class NeuralLifecycle:
                 loss.backward()
                 nn_utils.clip_grad_norm_(loaded_model.parameters(), max_norm=model_definition.gradient_clip)
 
-                # Update weights
                 optimizer.step()
 
                 # Accumulate loss
@@ -38,6 +38,7 @@ class NeuralLifecycle:
 
             # Calculate and print average loss per epoch
             avg_loss = running_loss_counter / item_counter
+            scheduler.step(avg_loss)
             print(f"Epoch [{epoch + 1}/{epochs}], Loss: {avg_loss:.4f}")
 
     #@staticmethod

@@ -3,10 +3,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-
 class DataPair(BaseModel):
     uuid: UUID = Field(alias="_id")
-    topic: str
     createdAt: int
     inputs: List[float]
     expected: List[float]

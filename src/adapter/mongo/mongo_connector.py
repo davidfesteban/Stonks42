@@ -1,4 +1,5 @@
 # TODO: Make it reactive
+# TODO: Grab env values
 from typing import Any
 
 import pymongo
@@ -11,12 +12,10 @@ class MongoConnector:
     _db: Any
     _collection: Any
 
-    def __init__(self, collection_name: str):
+    def __init__(self):
         self._client = MongoClient('mongodb://admin:password@localhost:27017/')
         self._db = self._client['stonks']
-        self._collection = self._db[collection_name]
 
-    def find_by_topic_ordered_asc(self, topic: str) -> Cursor:
-        query = {"topic": topic}
-        results = self._collection.find(query).sort("createdAt", pymongo.ASCENDING)
+    def find_by_collection_ordered_asc(self, collection: str) -> Cursor:
+        results = self._db[collection].find({}).sort("createdAt", pymongo.ASCENDING)
         return results

@@ -1,17 +1,13 @@
-import torch
 import torch.nn.utils as nn_utils
 
-from model_creator import ModelCreator
 from torch.utils.data import DataLoader
-from model_creator import ModelCreator
+from src.model.model_definition_gen_A0 import ModelDefinitionGenA0
 from torch.nn.modules.module import Module
-from mongo_dataset_tensor import MongoDatasetTensorCache
-from mongo_connector import MongoConnector
 
 class NeuralLifecycle:
 
     @staticmethod
-    def train_model(model_definition: ModelCreator, loaded_model: Module, data_loader: DataLoader, optimizer, scheduler,
+    def train_model(model_definition: ModelDefinitionGenA0, loaded_model: Module, data_loader: DataLoader, optimizer, scheduler,
                     epochs: int):
         loaded_model.train()  # Set model to training mode
         for epoch in range(epochs):

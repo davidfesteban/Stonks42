@@ -1,11 +1,10 @@
 from typing import List
-from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+
 
 class DataPair(BaseModel):
-    uuid: UUID = Field(alias="_id")
-    createdAt: int
+    createdAt: int  # ID
     inputs: List[float]
     expected: List[float]
 

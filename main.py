@@ -2,11 +2,12 @@
 # app = FastAPI()
 
 from src.service.neural.neural_service import NeuralService
+from src.service.scrap.scrap_service import ScrapService
 
 
 # TODO: Add NEAT
 def main():
-    NeuralService().run()
+    ScrapService().run()
 
 
 if __name__ == "__main__":

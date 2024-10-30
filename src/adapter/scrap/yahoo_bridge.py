@@ -14,8 +14,8 @@ class YahooBridge:
         result: Dict[str, List[MarketData]] = defaultdict(list)
 
         for field, ticker in time_point_class.get_field_tickers().items():
-            dataframe_history = yfinance.Ticker(ticker).history(start="2024-10-25")
-            # dataframe_history = yfinance.Ticker(ticker).history(period="max", repair=True)
+            # dataframe_history = yfinance.Ticker(ticker).history(start="2024-10-25")
+            dataframe_history = yfinance.Ticker(ticker).history(period="max", repair=True)
             dataframe_history = dataframe_history.tz_convert("UTC")
 
             # Iterate over each row in the DataFrame

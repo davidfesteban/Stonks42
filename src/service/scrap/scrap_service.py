@@ -18,4 +18,4 @@ class ScrapService:
         time_point_list = TimePointConverter.fill_none_and_convert(filled_total_dict)
         data_pair_list = DataPairConverter.convert_to_data_pair(time_point_list)
 
-        MongoConnector().save_data_pairs("StonksV3", data_pair_list)
+        MongoConnector().save_data_pairs("Stonks_Full_30_Oct_2024", data_pair_list)

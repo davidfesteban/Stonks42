@@ -7,7 +7,7 @@ from src.service.scrap.scrap_service import ScrapService
 
 # TODO: Add NEAT
 def main():
-    ScrapService().run()
+    # ScrapService().run()
 
 
 if __name__ == "__main__":

@@ -1,9 +1,11 @@
+import math
 from typing import Optional
 
 from pydantic import BaseModel, Field
 
+
 class MarketData(BaseModel):
-    date: Optional[int]  # Unix timestamp for easier storage
+    date: Optional[int]  # Formatted as YYYYMMDD
     day_of_week: Optional[int] = Field(None, description="Day of the week as an integer (0 for Sunday, 6 for Saturday)")
 
     etf_open: Optional[float] = Field(None, description="Opening price of the ETF")
@@ -34,3 +36,9 @@ class MarketData(BaseModel):
     volatility_10_days: Optional[float] = Field(None, description="10-day volatility of the ETF")
     volatility_20_days: Optional[float] = Field(None, description="20-day volatility of the ETF")
     volatility_30_days: Optional[float] = Field(None, description="30-day volatility of the ETF")
+
+    def fill_na_with_zero(self):
+        for field, value in self.__dict__.items():
+            if value is None or (isinstance(value, float) and math.isnan(value)):
+                setattr(self, field, 0)
+        return self

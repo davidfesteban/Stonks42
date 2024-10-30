@@ -8,44 +8,36 @@ class DataPairConverter:
     @staticmethod
     def convert_to_data_pair(time_point_list: List[TimePoint]) -> List[DataPair]:
         data_pairs = []
-        timepoints = sorted(time_point_list, key=lambda tp: tp.current_etf.date)
 
-        for idx, time_point in enumerate(timepoints):
-            base_date = time_point.current_etf.date
-            if not all(getattr(time_point, field).date == base_date for field in time_point.__annotations__):
-                raise ValueError("Inconsistent dates found in TimePoint")
+        time_point_list = sorted(time_point_list, key=lambda tp: tp.current_etf.date if tp.current_etf else 0)
+
+        for i in range(len(time_point_list) - 1):
+            current_time_point = time_point_list[i]
+            next_time_point = time_point_list[i + 1]
 
             inputs = []
-            for field in time_point.__annotations__:
-                market_data = getattr(time_point, field)
-                if market_data is not None:
-                    inputs.extend([
-                        float(getattr(market_data, attr)) if getattr(market_data, attr) is not None else 0.0
-                        for attr in market_data.__fields__
-                    ])
+            for field in current_time_point.__annotations__:
+                market_data = getattr(current_time_point, field)
+                # Add all values of MarketData to inputs, including 'date' and 'day_of_week'
+                inputs.extend([
+                    getattr(market_data, attr) if getattr(market_data, attr) is not None else 0.0
+                    for attr in market_data.__fields__
+                ])
 
-
-            if idx + 1 < len(timepoints):
-                tomorrow_close = timepoints[idx + 1].current_etf.etf_close
-                if tomorrow_close < time_point.current_etf.etf_close:
-                    expected = 0
-                elif tomorrow_close == time_point.current_etf.etf_close:
-                    expected = 1
-                else:
-                    expected = 2
+            current_close = current_time_point.current_etf.etf_close
+            next_close = next_time_point.current_etf.etf_close
+            if next_close < current_close:
+                expected = 0
+            elif next_close == current_close:
+                expected = 1
             else:
-                print("No data for tomorrow!. Today: " + time_point.current_etf.date)
-                expected = None
+                expected = 2
 
-            created_at = base_date
-
-            if expected is not None:
-                data_pair = DataPair(
-                    createdAt=created_at,
-                    inputs=inputs,
-                    expected=expected
-                )
-                data_pairs.append(data_pair)
+            data_pair = DataPair(
+                createdAt=current_time_point.current_etf.date,
+                inputs=inputs,
+                expected=[expected]
+            )
+            data_pairs.append(data_pair)
 
         return data_pairs
-

@@ -1,6 +1,6 @@
 # TODO: Make it reactive
 # TODO: Grab env values
-from typing import Any, List
+from typing import Any, List, Tuple
 
 import pymongo
 from pymongo import MongoClient
@@ -25,3 +25,10 @@ class MongoConnector:
     def save_data_pairs(self, collection: str, data_pairs: List[DataPair]):
         result = self._db[collection].insert_many([data_pair.dict() for data_pair in data_pairs])
         print(f"Inserted {len(result.inserted_ids)} documents into MongoDB.")
+
+    def count_input_expected_size(self, collection: str) -> Tuple[int, int]:
+        first_document: DataPair = DataPair(**self._db[collection].find_one())
+        return len(first_document.inputs), len(first_document.expected)
+
+    def count_data_pairs(self, collection: str) -> int:
+        return self._db[collection].count_documents({})

@@ -1,18 +1,25 @@
 import time
+from typing import Any
 
+import torch
 import torch.nn.utils as nn_utils
+from torch._C._te import Tensor
 from torch.nn.modules.module import Module
 from torch.utils.data import DataLoader
 
 from src.adapter.model.model_util import ModelUtil
+from src.dto.data_pair import DataPair
 from src.model.model_definition_gen_A0 import ModelDefinitionGenA0
+from src.model.model_definition_gen_B0 import ModelDefinitionGenB0
+from src.model.model_definition_gen_C0 import ModelDefinitionGenC0
+
 
 # TODO: Wrapping timers
 
 class NeuralLifecycle:
 
     @staticmethod
-    def train_model(model_definition: ModelDefinitionGenA0, loaded_model: Module, data_loader: DataLoader, optimizer,
+    def train_model(model_definition: ModelDefinitionGenC0, loaded_model: Module, data_loader: DataLoader, optimizer,
                     scheduler,
                     epochs: int,
                     callback):
@@ -80,29 +87,25 @@ class NeuralLifecycle:
 
             print(f"Epoch [{epoch + 1}/{epochs}], Loss: {avg_loss:.4f}")
 
-    # @staticmethod
-    # def evaluate_model(model, data_loader, criterion, device):
-    #    model.eval()  # Set model to evaluation mode
-    #    val_loss_counter = 0.0
-    #    correct_predictions = 0
-    #    total_predictions = 0
-    #
-    #    with torch.no_grad():  # Disable gradient calculation
-    #        for features, expected in data_loader:
-    #            features, expected = features.to(device), expected.to(device)
-    #
-    #            # Forward pass
-    #            outputs = model(features)
-    #            val_loss = criterion(outputs, expected)
-    #
-    #            # Accumulate validation loss
-    #            val_loss_counter += val_loss.item()
-    #
-    #            # Calculate accuracy if this is a classification model
-    #            _, predicted = torch.max(outputs, 1)  # Assumes outputs are logits for classification
-    #            correct_predictions += (predicted == expected).sum().item()
-    #            total_predictions += expected.size(0)
-    #
-    #    avg_val_loss = val_loss_counter / len(data_loader)
-    #    accuracy = correct_predictions / total_predictions
-    #    print(f"Validation Loss: {avg_val_loss:.4f}, Accuracy: {accuracy:.2%}")
+    @staticmethod
+    def predict(model_definition: ModelDefinitionGenC0, model_path: str, input_data: torch.Tensor) -> Any:
+        # Initialize model architecture
+        model = model_definition.to_model_device()
+
+        # Load the model checkpoint
+        checkpoint = torch.load(model_path, map_location=model.device)
+
+        # Load model state_dict
+        model.load_state_dict(checkpoint['model_state_dict'])
+
+        # Set model to evaluation mode
+        model.eval()
+
+        # Reshape input data for LSTM compatibility if needed (batch_size, sequence_length, input_size)
+        input_data = input_data.unsqueeze(0).to(model.device)  # Adds batch dimension
+
+        # No gradients needed during inference
+        with torch.no_grad():
+            output = model(input_data)
+
+        return output

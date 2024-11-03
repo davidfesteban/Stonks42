@@ -32,3 +32,18 @@ class MongoConnector:
 
     def count_data_pairs(self, collection: str) -> int:
         return self._db[collection].count_documents({})
+
+    def find_by_collection_and_date_ordered_asc(self, collection: str, date: int) -> Any:
+        result = self._db[collection].find_one(
+            {"createdAt": date},
+            sort=[("createdAt", pymongo.DESCENDING)]
+        )
+        return result
+
+    def find_by_collection_and_date_range_ordered_asc(self, collection: str, start_date: int, end_date: int) -> Any:
+        results = self._db[collection].find(
+            {"createdAt": {"$gte": start_date, "$lte": end_date}}
+        ).sort("createdAt", pymongo.ASCENDING)
+
+        return results
+

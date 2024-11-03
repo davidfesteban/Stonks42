@@ -13,22 +13,22 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 # And maybe disable the Queue from CSV
 # And maybe install CUDA
 
-class ModelDefinitionGenA0(nn.Module):
-    available_collections = ["Stonks_Full_30_Oct_2024"]
+class ModelDefinitionGenB0(nn.Module):
+    available_collections = ["Stonks_Full_3_Nov_2024_PCT"]
 
     def __init__(self, input_expected_count: Tuple[int, int], enable_gpu: bool):
-        super(ModelDefinitionGenA0, self).__init__()
+        super(ModelDefinitionGenB0, self).__init__()
         # Maybe as alternative lstm_layer = nn.LSTM(input_size=10, hidden_size=20, num_layers=2)
         self.device = torch.device('cuda' if enable_gpu and torch.cuda.is_available() else 'mps' if enable_gpu and torch.backends.mps.is_available() else 'cpu')
         print(self.device)
         # input_expected_count
         self.layers = nn.ModuleList([
-
-            nn.Linear(702, 256),
+            nn.Linear(702, 512),
+            nn.Linear(512, 256),
             nn.Linear(256, 128),
             nn.Linear(128, 64),
             nn.Linear(64, 32),
-            nn.Linear(32, 1)
+            nn.Linear(32, 3)
         ])
 
 
@@ -53,7 +53,7 @@ class ModelDefinitionGenA0(nn.Module):
         return self.to(self.device)
 
     def optimizer(self, loaded_model: Module):
-        return optim.AdamW(loaded_model.parameters(), lr=self.learning_ratio, betas=(0.8, 0.999), weight_decay=1e-3)
+        return optim.AdamW(loaded_model.parameters(), lr=self.learning_ratio, betas=(0.85, 0.999), weight_decay=1e-3)
 
     def scheduler(self, loaded_optimizer):
         return ReduceLROnPlateau(loaded_optimizer, mode='min', factor=0.1, patience=10)

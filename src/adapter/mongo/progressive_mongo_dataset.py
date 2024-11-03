@@ -24,10 +24,6 @@ class ProgressiveMongoDataset(IterableDataset):
 
         for document in cursor:
             yield self.mapper(document)
-            # Convert MongoDB document to tensors
-            # feature_tensor = torch.tensor(document['inputs'], dtype=torch.float32).to(self.device)
-            # expected_tensor = torch.tensor(document['expected'], dtype=torch.float32).to(self.device)
-            # yield feature_tensor, expected_tensor
 
     def __len__(self):
         return self.query_count(self.client)

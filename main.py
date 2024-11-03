@@ -2,13 +2,13 @@
 # app = FastAPI()
 
 from src.service.neural.neural_service import NeuralService
-from src.service.scrap.scrap_service import ScrapService
 
 
 # TODO: Add NEAT
 def main():
     # ScrapService().run()
     NeuralService().run()
+    # NeuralService().predict(date=20241014)
 
 
 if __name__ == "__main__":

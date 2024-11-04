@@ -35,7 +35,7 @@ class ModelDefinitionGenC0(nn.Module):
             nn.LeakyReLU(negative_slope=0.01),
             nn.Linear(64, 32),
             nn.LeakyReLU(negative_slope=0.01),
-            nn.Linear(32, 3)  # Output layer
+            nn.Linear(32, 1)  # Output layer
         )
 
         self.learning_ratio = 1e-3

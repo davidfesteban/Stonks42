@@ -26,9 +26,13 @@ class MongoConnector:
         result = self._db[collection].insert_many([data_pair.dict() for data_pair in data_pairs])
         print(f"Inserted {len(result.inserted_ids)} documents into MongoDB.")
 
-    def count_input_expected_size(self, collection: str) -> Tuple[int, int]:
+    def count_input_expected_size(self, collection: str, definition: int = -1) -> Tuple[int, int]:
         first_document: DataPair = DataPair(**self._db[collection].find_one())
-        return len(first_document.inputs), len(first_document.expected)
+
+        if definition == -1:
+            return len(first_document.inputs), len(first_document.expected)
+        else:
+            return len(first_document.inputs), 1
 
     def count_data_pairs(self, collection: str) -> int:
         return self._db[collection].count_documents({})
@@ -46,4 +50,3 @@ class MongoConnector:
         ).sort("createdAt", pymongo.ASCENDING)
 
         return results
-

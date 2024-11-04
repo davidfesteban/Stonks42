@@ -4,10 +4,14 @@ from pydantic import BaseModel
 
 
 class DataPair(BaseModel):
-    createdAt: int  # ID
+    _id: int  # Define `_id` directly as the primary key
     inputs: List[float]
     expected: List[float]
 
+    # Optional property to access `_id` as `createdAt` if needed
+    @property
+    def createdAt(self):
+        return self._id
+
     class Config:
-        populate_by_name = True  # Allows using field names directly
-        extra = "ignore"  # Ignores fields not defined in the model, like `_id`
+        extra = "ignore"  # Ignore fields not defined in the model

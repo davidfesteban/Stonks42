@@ -10,12 +10,16 @@ from src.dto.time_point import TimePoint
 class YahooBridge:
 
     @staticmethod
-    def grab_normalised_dataframes_by_field(time_point_class: Type[TimePoint]) -> Dict[str, List[MarketData]]:
+    def grab_normalised_dataframes_by_field(time_point_class: Type[TimePoint], date_str: str) -> Dict[
+        str, List[MarketData]]:
         result: Dict[str, List[MarketData]] = defaultdict(list)
 
         for field, ticker in time_point_class.get_field_tickers().items():
             # dataframe_history = yfinance.Ticker(ticker).history(start="2024-10-25")
-            dataframe_history = yfinance.Ticker(ticker).history(period="max", repair=True)
+            if date_str == 'max':
+                dataframe_history = yfinance.Ticker(ticker).history(period="max", repair=True)
+            else:
+                dataframe_history = yfinance.Ticker(ticker).history(start=date_str)
             dataframe_history = dataframe_history.tz_convert("UTC")
 
             # Iterate over each row in the DataFrame

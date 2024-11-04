@@ -2,13 +2,19 @@
 # app = FastAPI()
 
 from src.service.neural.neural_service import NeuralService
+from src.service.scrap.scrap_service import ScrapService
 
 
+# TODO: LSTM, TRANSFORMERS vs TGN TCN
+# TODO: Fix LSTM size
+# TODO: General training and then focused training
+# TODO: Increase dataset
 # TODO: Add NEAT
+
 def main():
-    # ScrapService().run()
-    NeuralService().run()
-    # NeuralService().predict(date=20241014)
+    ScrapService().from_date()
+    # NeuralService().run()
+    # NeuralService().predict(date=20241031)
 
 
 if __name__ == "__main__":

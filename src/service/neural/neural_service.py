@@ -15,9 +15,10 @@ class NeuralService:
 
     def run(self):
         # Initialize MongoDB connection and Model Definition
+        model_type = ModelDefinitionGenC0
         mongo_connector = MongoConnector()
-        model_definition = ModelDefinitionGenC0(
-            mongo_connector.count_input_expected_size(ModelDefinitionGenC0.available_collections[0]),
+        model_definition = model_type(
+            mongo_connector.count_input_expected_size(model_type.available_collections[-1]),
             enable_gpu=False)
 
         # Load the model, optimizer and LR Scheduler
@@ -29,9 +30,9 @@ class NeuralService:
         progressive_mongo_cursor = ProgressiveMongoDataset(client=mongo_connector,
                                                            query_function=lambda
                                                                client: client.find_by_collection_ordered_asc(
-                                                               ModelDefinitionGenC0.available_collections[0]),
+                                                               model_type.available_collections[-1]),
                                                            query_count=lambda client: client.count_data_pairs(
-                                                               ModelDefinitionGenC0.available_collections[0]),
+                                                               model_type.available_collections[-1]),
                                                            mapper=lambda document: MongoDataPairMapper.map_to_data_pair(
                                                                document, model_definition.device))
 
@@ -52,7 +53,7 @@ class NeuralService:
         ModelUtil.save_model(loaded_model=loaded_model, optimizer=optimizer, name='A0')
 
     def predict(self, date: int):
-        model = ModelDefinitionGenC0((0,0), enable_gpu=False)
+        model = ModelDefinitionGenC0((0, 0), enable_gpu=False)
         mongo_document = MongoConnector().find_by_collection_and_date_ordered_asc(
             ModelDefinitionGenC0.available_collections[0], date)
 

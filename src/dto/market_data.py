@@ -42,3 +42,22 @@ class MarketData(BaseModel):
             if value is None or (isinstance(value, float) and math.isnan(value)):
                 setattr(self, field, 0)
         return self
+
+    def fill_none_with_na(self):
+        for field, value in self.__dict__.items():
+            if value is None or (isinstance(value, float) and math.isnan(value)):
+                setattr(self, field, math.nan)
+        return self
+
+    def is_valid_correcting_volume(self) -> bool:
+        # Check that all fields are not None and greater than 0
+        if (self.etf_open is None or self.etf_open <= 0 or
+                self.etf_close is None or self.etf_close <= 0 or
+                self.etf_low is None or self.etf_low <= 0 or
+                self.etf_high is None or self.etf_high <= 0):
+            return False
+
+        if self.etf_volume is None or self.etf_volume == 0 and self.etf_open != self.etf_close:
+            self.etf_volume = math.nan
+
+        return True

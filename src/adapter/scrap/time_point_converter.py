@@ -8,13 +8,12 @@ from src.dto.time_point import TimePoint
 class TimePointConverter:
 
     @staticmethod
-    def fill_none_and_convert(data: Dict[str, List[MarketData]]) -> List[TimePoint]:
+    def group_and_convert(data: Dict[str, List[MarketData]]) -> List[TimePoint]:
         grouped_data = defaultdict(lambda: {field: None for field in TimePoint.__annotations__.keys()})
 
         for field_name, market_data_list in data.items():
             for market_data in market_data_list:
-                if market_data.date is not None:
-                    grouped_data[market_data.date][field_name] = market_data.fill_na_with_zero()
+                grouped_data[market_data.date][field_name] = market_data
 
         time_points = []
         for date, fields in grouped_data.items():
